@@ -1,0 +1,71 @@
+{
+  "dev-server": {
+    "hosts": [], 
+    "name": "dev-server", 
+    "tags": [
+      {
+        "name": "basic-roles-multi-environment"
+      }
+    ], 
+    "vars": {}
+  }, 
+  "example-web_web-servers_dev-server": {
+    "hosts": [], 
+    "name": "example-web_web-servers_dev-server", 
+    "tags": [
+      {
+        "name": "advanced-shared-global-roles"
+      }, 
+      {
+        "name": "inventories"
+      }
+    ], 
+    "vars": {}
+  }, 
+  "example-web_web-servers_prod-server": {
+    "hosts": [], 
+    "name": "example-web_web-servers_prod-server", 
+    "tags": [
+      {
+        "name": "advanced-shared-global-roles"
+      }, 
+      {
+        "name": "inventories"
+      }
+    ], 
+    "vars": {}
+  }, 
+  "example-web_web-servers_staging-server": {
+    "hosts": [], 
+    "name": "example-web_web-servers_staging-server", 
+    "tags": [
+      {
+        "name": "advanced-shared-global-roles"
+      }, 
+      {
+        "name": "inventories"
+      }
+    ], 
+    "vars": {}
+  }, 
+  "prod-server": {
+    "hosts": [], 
+    "name": "prod-server", 
+    "tags": [
+      {
+        "name": "basic-roles-multi-environment"
+      }
+    ], 
+    "vars": {}
+  }, 
+  "staging-server": {
+    "hosts": [], 
+    "name": "staging-server", 
+    "tags": [
+      {
+        "name": "basic-roles-multi-environment"
+      }
+    ], 
+    "vars": {}
+  }
+}
