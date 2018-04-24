@@ -270,13 +270,13 @@ class ScmInventory(object):
         # clean work repo
 
 
-        shutil.rmtree(self.scm_work_dir)
+        # shutil.rmtree(self.scm_work_dir)
 
-        os.makedirs(self.scm_work_dir)
+        # os.makedirs(self.scm_work_dir)
 
-        repo = self.scm_url
+        # repo = self.scm_url
 
-        task = subprocess.check_output(['git', 'clone', repo, self.scm_work_dir ])
+        # task = subprocess.check_output(['git', 'clone', repo, self.scm_work_dir ])
 
 
 
@@ -316,8 +316,9 @@ class ScmInventory(object):
                 if 'host_vars' in os.path.join(root, file):
                     # print(os.path.join(root, file))
                     _hostname = os.path.splitext(file)[0]
-                    _path = root.replace(self.scm_work_dir,'').replace('host_vars', '')
-                    _hosts.append( dict(name=_hostname, tags=self.to_tag(_path), vars={}, hosts=[]) )
+                    if _hostname in ['all']:
+                        _path = root.replace(self.scm_work_dir,'').replace('host_vars', '')
+                        _hosts.append( dict(name=_hostname, tags=self.to_tag(_path), vars={}, hosts=[]) )
                     
 
                 # - group
@@ -337,8 +338,8 @@ class ScmInventory(object):
 
 
 
-        if 'all' in _hosts: del _hosts['all']
-        if 'all' in _groups: del _groups['all']
+        # if 'all' in _hosts: del _hosts['all']
+        # if 'all' in _groups: del _groups['all']
 
         # print(json.dumps(_hosts, sort_keys=True, indent=2))
         # print(json.dumps(_groups, sort_keys=True, indent=2))
