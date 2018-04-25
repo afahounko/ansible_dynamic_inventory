@@ -1,15 +1,9 @@
 {
-  "advanced_shared_global_roles": {
-    "children": [
-      "inventories"
-    ], 
-    "hosts": [
-      "example-web_web-servers_staging-server", 
-      "example-web_web-servers_prod-server", 
-      "example-web_web-servers_dev-server"
-    ], 
-    "vars": {}
-  }, 
+  "advanced_shared_global_roles": [
+    "example-web_web-servers_staging-server", 
+    "example-web_web-servers_prod-server", 
+    "example-web_web-servers_dev-server"
+  ], 
   "all": [
     "dev-server", 
     "prod-server", 
@@ -18,28 +12,30 @@
     "example-web_web-servers_prod-server", 
     "example-web_web-servers_dev-server"
   ], 
-  "basic_roles_multi_environment": {
-    "children": [], 
-    "hosts": [
-      "dev-server", 
-      "prod-server", 
-      "staging-server"
-    ], 
-    "vars": {}
-  }, 
-  "inventories": {
-    "children": [], 
-    "hosts": [
-      "example-web_web-servers_staging-server", 
-      "example-web_web-servers_prod-server", 
-      "example-web_web-servers_dev-server"
-    ], 
-    "vars": {}
-  }, 
+  "ansible_directory_structure_examples": [
+    "dev-server", 
+    "prod-server", 
+    "staging-server", 
+    "example-web_web-servers_staging-server", 
+    "example-web_web-servers_prod-server", 
+    "example-web_web-servers_dev-server"
+  ], 
+  "basic_roles_multi_environment": [
+    "dev-server", 
+    "prod-server", 
+    "staging-server"
+  ], 
+  "inventories": [
+    "example-web_web-servers_staging-server", 
+    "example-web_web-servers_prod-server", 
+    "example-web_web-servers_dev-server"
+  ], 
   "tags": {
     "children": [
+      "ansible_directory_structure_examples", 
       "basic_roles_multi_environment", 
-      "advanced_shared_global_roles"
+      "advanced_shared_global_roles", 
+      "inventories"
     ], 
     "hosts": [], 
     "vars": {}

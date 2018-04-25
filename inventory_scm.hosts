@@ -4,6 +4,9 @@
     "name": "dev-server", 
     "tags": [
       {
+        "name": "ansible-directory-structure-examples"
+      }, 
+      {
         "name": "basic-roles-multi-environment"
       }
     ], 
@@ -13,6 +16,9 @@
     "hosts": [], 
     "name": "example-web_web-servers_dev-server", 
     "tags": [
+      {
+        "name": "ansible-directory-structure-examples"
+      }, 
       {
         "name": "advanced-shared-global-roles"
       }, 
@@ -27,6 +33,9 @@
     "name": "example-web_web-servers_prod-server", 
     "tags": [
       {
+        "name": "ansible-directory-structure-examples"
+      }, 
+      {
         "name": "advanced-shared-global-roles"
       }, 
       {
@@ -39,6 +48,9 @@
     "hosts": [], 
     "name": "example-web_web-servers_staging-server", 
     "tags": [
+      {
+        "name": "ansible-directory-structure-examples"
+      }, 
       {
         "name": "advanced-shared-global-roles"
       }, 
@@ -53,6 +65,9 @@
     "name": "prod-server", 
     "tags": [
       {
+        "name": "ansible-directory-structure-examples"
+      }, 
+      {
         "name": "basic-roles-multi-environment"
       }
     ], 
@@ -62,6 +77,9 @@
     "hosts": [], 
     "name": "staging-server", 
     "tags": [
+      {
+        "name": "ansible-directory-structure-examples"
+      }, 
       {
         "name": "basic-roles-multi-environment"
       }

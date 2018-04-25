@@ -40,8 +40,28 @@ try:
 except ImportError:
     import simplejson as json
 
+# Defaults values in case conf file does not exist
+scm_defaults = dict(
+    scm = dict ( url = '.',
+                 name = 'file',
+                 work_dir = '/tmp/work',
+                 username = 'admin',
+                 password = 'pass',
+                 clean_group_keys = True,
+                 nest_tags = False,
+        ),
+    cache = dict ( max_age = 600,
+
+        )
+    )
+
+# end default settings
 
 class ScmInventory(object):
+
+    global scm_defaults
+
+
     def __init__(self):
         """
         Main execution path
@@ -124,60 +144,72 @@ class ScmInventory(object):
 
         config.read(config_paths)
 
+
         # scm API related
         if config.has_option('scm', 'url'):
             self.scm_url = config.get('scm', 'url')
         else:
-            self.scm_url = None
+            self.scm_url = scm_defaults['scm']['url']
 
-        if not self.scm_url:
-            warnings.warn("No url specified, expected something like 'https://git.example.com/example.git'")
+        if self.args.debug:
+            print("No url specified, using %s" % scm_defaults['scm']['url'])
 
         # scm work dir
         if config.has_option('scm', 'work_dir'):
             self.scm_work_dir = config.get('scm', 'work_dir')
         else:
-            self.scm_work_dir = None
+            self.scm_work_dir = scm_defaults['scm']['work_dir']
 
-        if not self.scm_work_dir:
-            warnings.warn("No work_dir specified, expected something like '/tmp/work_dir'")
+        if self.args.debug:
+            print("No work_dir specified, using %s" % scm_defaults['scm']['work_dir'])
 
 
-        if config.has_option('scm', 'username'):
-            self.scm_username = config.get('scm', 'username')
-        else:
-            self.scm_username = None
-
-        if not self.scm_username:
-            warnings.warn("No username specified, you need to specify a scm username.")
-
-        if config.has_option('scm', 'password'):
-            self.scm_pw = config.get('scm', 'password', raw=True)
-        else:
-            self.scm_pw = None
-
-        if not self.scm_pw:
-            warnings.warn("No password specified, you need to specify a password for the scm user.")
-
-        if config.has_option('scm', 'ssl_verify'):
-            self.scm_ssl_verify = config.getboolean('scm', 'ssl_verify')
-        else:
-            self.scm_ssl_verify = True
-
+        # scm name 
         if config.has_option('scm', 'name'):
             self.scm_name = config.get('scm', 'name')
         else:
-            self.scm_version = None
+            self.scm_name = scm_defaults['scm']['name']
+
+        if self.args.debug:
+            print("No name specified, using %s" % scm_defaults['scm']['name'])
+
+
+
+        # if config.has_option('scm', 'username'):
+        #     self.scm_username = config.get('scm', 'username')
+        # else:
+        #     self.scm_username = None
+
+        # if not self.scm_username:
+        #     warnings.warn("No username specified, you need to specify a scm username.")
+
+        # if config.has_option('scm', 'password'):
+        #     self.scm_pw = config.get('scm', 'password', raw=True)
+        # else:
+        #     self.scm_pw = None
+
+        # if not self.scm_pw:
+        #     warnings.warn("No password specified, you need to specify a password for the scm user.")
+
+        # if config.has_option('scm', 'ssl_verify'):
+        #     self.scm_ssl_verify = config.getboolean('scm', 'ssl_verify')
+        # else:
+        #     self.scm_ssl_verify = True
+
+        # if config.has_option('scm', 'name'):
+        #     self.scm_name = config.get('scm', 'name')
+        # else:
+        #     self.scm_version = None
 
         if config.has_option('scm', 'clean_group_keys'):
             self.scm_clean_group_keys = config.getboolean('scm', 'clean_group_keys')
         else:
-            self.scm_clean_group_keys = True
+            self.scm_clean_group_keys = scm_defaults['scm']['clean_group_keys'] #True
 
         if config.has_option('scm', 'nest_tags'):
             self.scm_nest_tags = config.getboolean('scm', 'nest_tags')
         else:
-            self.scm_nest_tags = False
+            self.scm_nest_tags =  scm_defaults['scm']['nest_tags'] #False
 
         if config.has_option('scm', 'suffix'):
             self.scm_suffix = config.get('scm', 'suffix')
@@ -203,16 +235,25 @@ class ScmInventory(object):
         (script, ext) = os.path.splitext(os.path.basename(__file__))
         self.cache_path_hosts = cache_path + "/%s.hosts" % script
         self.cache_path_inventory = cache_path + "/%s.inventory" % script
-        self.cache_max_age = config.getint('cache', 'max_age')
+
+        # self.cache_max_age = config.getint('cache', 'max_age')
+        if config.has_option('cache', 'max_age'):
+            self.cache_max_age = config.getint('cache', 'max_age')
+        else:
+            self.cache_max_age = scm_defaults['cache']['max_age']
+
+
 
         if self.args.debug:
             print("scm settings:")
             print("scm_url               = %s" % self.scm_url)
-            print("scm_work_dir               = %s" % self.scm_work_dir)
-            print("scm_username          = %s" % self.scm_username)
-            print("scm_pw                = %s" % self.scm_pw)
-            print("scm_ssl_verify        = %s" % self.scm_ssl_verify)
-            print("scm_name              = %s" % self.scm_name)
+            print("scm_work_dir          = %s" % self.scm_work_dir)
+            print("scm_clean_group_keys  = %s" % self.scm_clean_group_keys)
+            print("scm_nest_tags         = %s" % self.scm_nest_tags)
+            # print("scm_username          = %s" % self.scm_username)
+            # print("scm_pw                = %s" % self.scm_pw)
+            # print("scm_ssl_verify        = %s" % self.scm_ssl_verify)
+            # print("scm_name              = %s" % self.scm_name)
             print("Cache settings:")
             print("cache_max_age        = %s" % self.cache_max_age)
             print("cache_path_hosts     = %s" % self.cache_path_hosts)
@@ -267,6 +308,10 @@ class ScmInventory(object):
 
         # print (subprocess.check_output(['ls','-l']) )
 
+        print(self.scm_url, '---', os.path.basename(self.scm_url))
+
+        # sys.exit()
+
         # clean work repo
 
 
@@ -298,8 +343,13 @@ class ScmInventory(object):
 
         ext = [ ".yml", ".json" ]
 
+        if self.scm_url in ['.'] and self.scm_name in ['file']:
+            _workdir = '.'
+        else:
+            _workdir = self.scm_work_dir
 
-        for root, dirs, files in os.walk(self.scm_work_dir):
+
+        for root, dirs, files in os.walk( _workdir ):
 
             if '.git' in dirs:
                 # don't go into any .git directories.
@@ -316,7 +366,7 @@ class ScmInventory(object):
                 if 'host_vars' in os.path.join(root, file):
                     # print(os.path.join(root, file))
                     _hostname = os.path.splitext(file)[0]
-                    if _hostname in ['all']:
+                    if _hostname not in ['all']:
                         _path = root.replace(self.scm_work_dir,'').replace('host_vars', '')
                         _hosts.append( dict(name=_hostname, tags=self.to_tag(_path), vars={}, hosts=[]) )
                     
@@ -572,7 +622,7 @@ class ScmInventory(object):
         Converts 'path' string into in a dict so they can be used as Ansible groups
         """
         _tags = []
-        tagnames = path.split('/')
+        tagnames = path[1:].split('/')
         for tag in tagnames:
             if len(tag) > 0 :
                 _tags.append( dict(name=tag, ) )
