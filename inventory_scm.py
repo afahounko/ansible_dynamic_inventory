@@ -308,7 +308,7 @@ class ScmInventory(object):
 
         # print (subprocess.check_output(['ls','-l']) )
 
-        print(self.scm_url, '---', os.path.basename(self.scm_url))
+        # print(self.scm_url, '---', os.path.basename(self.scm_url))
 
         # sys.exit()
 
@@ -366,10 +366,12 @@ class ScmInventory(object):
                 if 'host_vars' in os.path.join(root, file):
                     # print(os.path.join(root, file))
                     _hostname = os.path.splitext(file)[0]
-                    if _hostname not in ['all']:
+                    matchObj = re.search("^(all$|\\.).*", _hostname)
+                    if not matchObj:
+                        # print (_hostname)
                         _path = root.replace(self.scm_work_dir,'').replace('host_vars', '')
                         _hosts.append( dict(name=_hostname, tags=self.to_tag(_path), vars={}, hosts=[]) )
-                    
+
 
                 # - group
 
@@ -382,9 +384,6 @@ class ScmInventory(object):
                 # if file.endswith(tuple(ext)):
                 #     print(len(path) * '---', file)
                 #     print(os.path.join(root, file))
-
-
-
 
 
 
