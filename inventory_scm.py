@@ -372,6 +372,24 @@ class ScmInventory(object):
                         _path = root.replace(self.scm_work_dir,'').replace('host_vars', '')
                         _hosts.append( dict(name=_hostname, tags=self.to_tag(_path), vars={}, hosts=[]) )
 
+                        # hard coded limitation
+                        if len(_hosts) >= 20:
+                            # print (len(_hosts))
+                            break
+
+
+            # hard coded limitation
+            if len(_hosts) >= 20:
+                # print (len(_hosts))
+                break
+
+
+
+                
+                
+                
+
+
 
                 # - group
 
@@ -436,6 +454,7 @@ class ScmInventory(object):
         # - end of debug output
 
         for host in self._get_hosts():
+
             if self.scm_suffix is not None and not host['name'].endswith(self.scm_suffix):
                 host['name'] = host['name'] + self.scm_suffix
 
