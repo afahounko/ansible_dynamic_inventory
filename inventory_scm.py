@@ -406,7 +406,8 @@ class ScmInventory(object):
                         if self.scm_only_host_vars:
                             # only content from host_vars
                             _copy = _vars.copy()
-                            _copy.update( dict(name=_hostname,) )
+                            _copy.update( dict(name=_hostname, tags=self.to_tag(_path)) )
+                            _copy.update( self._3ds_specific_vars(_path) )
                             _hosts.append( dict( _copy ))
                         else:
                             # - no overwrite 
@@ -424,9 +425,7 @@ class ScmInventory(object):
 
                 
                 
-                
-
-
+            
 
                 # - group
 
@@ -685,6 +684,33 @@ class ScmInventory(object):
                 _tags.append( dict(name=tag, ) )
 
         return _tags
+
+    def _3ds_specific_vars(self, path):
+        """
+        Converts 'path' string into in a dict so they can be used as Ansible groups
+        """
+        _3ds = dict()
+        regex_dir = re.compile("^(\.$|\.|\/)*", re.IGNORECASE)
+        _3ds['path'] = path
+        path = regex_dir.sub("", path)
+        tagnames = path.split('/')
+        
+        _3ds['path_updated'] = path
+
+        if len(tagnames) >= 1:
+            _3ds['site_CRUD_default_OU'] = tagnames[0]
+
+        if len(tagnames) >= 2:
+            _3ds['site_CRUD_site_name'] = tagnames[1]
+
+        if len(tagnames) >= 3:
+            _3ds['site_CRUD_default_environment_or_legacy'] = tagnames[2]
+
+        if len(tagnames) >= 4:
+            _3ds['site_CRUD_site_environment_folders'] = tagnames[3]
+
+
+        return _3ds
 
 
     def load_hosts_vars(self, path_host_vars):

@@ -3,7 +3,20 @@
     "ansible_ssh_host": "10.0.0.101", 
     "ansible_ssh_private_key_file": "./.vagrant/machines/default/virtualbox/private_key", 
     "ansible_ssh_user": "vagrant", 
-    "name": "dev-server"
+    "name": "dev-server", 
+    "path": "./ansible-directory-structure-examples/basic-roles-multi-environment/", 
+    "path_updated": "ansible-directory-structure-examples/basic-roles-multi-environment/", 
+    "site_CRUD_default_OU": "ansible-directory-structure-examples", 
+    "site_CRUD_default_environment_or_legacy": "", 
+    "site_CRUD_site_name": "basic-roles-multi-environment", 
+    "tags": [
+      {
+        "name": "ansible-directory-structure-examples"
+      }, 
+      {
+        "name": "basic-roles-multi-environment"
+      }
+    ]
   }, 
   "example-web_web-servers_dev-server": {
     "ansible_ssh_host": "{{ exampleWeb_webServers_ssh_host }}", 
@@ -12,7 +25,21 @@
     "exampleWeb_webServers_ssh_host": "10.0.0.102", 
     "exampleWeb_webServers_ssh_private_key_file": "./.vagrant/machines/default/virtualbox/private_key", 
     "exampleWeb_webServers_ssh_user": "vagrant", 
-    "name": "example-web_web-servers_dev-server"
+    "name": "example-web_web-servers_dev-server", 
+    "path": "./ansible-directory-structure-examples/advanced-shared-global-roles//", 
+    "path_updated": "ansible-directory-structure-examples/advanced-shared-global-roles//", 
+    "site_CRUD_default_OU": "ansible-directory-structure-examples", 
+    "site_CRUD_default_environment_or_legacy": "", 
+    "site_CRUD_site_environment_folders": "", 
+    "site_CRUD_site_name": "advanced-shared-global-roles", 
+    "tags": [
+      {
+        "name": "ansible-directory-structure-examples"
+      }, 
+      {
+        "name": "advanced-shared-global-roles"
+      }
+    ]
   }, 
   "example-web_web-servers_prod-server": {
     "ansible_ssh_host": "{{ exampleWeb_webServers_ssh_host }}", 
@@ -21,7 +48,21 @@
     "exampleWeb_webServers_ssh_host": "10.0.0.102", 
     "exampleWeb_webServers_ssh_private_key_file": "./.vagrant/machines/default/virtualbox/private_key", 
     "exampleWeb_webServers_ssh_user": "vagrant", 
-    "name": "example-web_web-servers_prod-server"
+    "name": "example-web_web-servers_prod-server", 
+    "path": "./ansible-directory-structure-examples/advanced-shared-global-roles//", 
+    "path_updated": "ansible-directory-structure-examples/advanced-shared-global-roles//", 
+    "site_CRUD_default_OU": "ansible-directory-structure-examples", 
+    "site_CRUD_default_environment_or_legacy": "", 
+    "site_CRUD_site_environment_folders": "", 
+    "site_CRUD_site_name": "advanced-shared-global-roles", 
+    "tags": [
+      {
+        "name": "ansible-directory-structure-examples"
+      }, 
+      {
+        "name": "advanced-shared-global-roles"
+      }
+    ]
   }, 
   "example-web_web-servers_staging-server": {
     "ansible_ssh_host": "{{ exampleWeb_webServers_ssh_host }}", 
@@ -30,18 +71,58 @@
     "exampleWeb_webServers_ssh_host": "10.0.0.102", 
     "exampleWeb_webServers_ssh_private_key_file": "./.vagrant/machines/default/virtualbox/private_key", 
     "exampleWeb_webServers_ssh_user": "vagrant", 
-    "name": "example-web_web-servers_staging-server"
+    "name": "example-web_web-servers_staging-server", 
+    "path": "./ansible-directory-structure-examples/advanced-shared-global-roles//", 
+    "path_updated": "ansible-directory-structure-examples/advanced-shared-global-roles//", 
+    "site_CRUD_default_OU": "ansible-directory-structure-examples", 
+    "site_CRUD_default_environment_or_legacy": "", 
+    "site_CRUD_site_environment_folders": "", 
+    "site_CRUD_site_name": "advanced-shared-global-roles", 
+    "tags": [
+      {
+        "name": "ansible-directory-structure-examples"
+      }, 
+      {
+        "name": "advanced-shared-global-roles"
+      }
+    ]
   }, 
   "prod-server": {
     "ansible_ssh_host": "10.0.0.101", 
     "ansible_ssh_private_key_file": "./.vagrant/machines/default/virtualbox/private_key", 
     "ansible_ssh_user": "vagrant", 
-    "name": "prod-server"
+    "name": "prod-server", 
+    "path": "./ansible-directory-structure-examples/basic-roles-multi-environment/", 
+    "path_updated": "ansible-directory-structure-examples/basic-roles-multi-environment/", 
+    "site_CRUD_default_OU": "ansible-directory-structure-examples", 
+    "site_CRUD_default_environment_or_legacy": "", 
+    "site_CRUD_site_name": "basic-roles-multi-environment", 
+    "tags": [
+      {
+        "name": "ansible-directory-structure-examples"
+      }, 
+      {
+        "name": "basic-roles-multi-environment"
+      }
+    ]
   }, 
   "staging-server": {
     "ansible_ssh_host": "10.0.0.101", 
     "ansible_ssh_private_key_file": "./.vagrant/machines/default/virtualbox/private_key", 
     "ansible_ssh_user": "vagrant", 
-    "name": "staging-server"
+    "name": "staging-server", 
+    "path": "./ansible-directory-structure-examples/basic-roles-multi-environment/", 
+    "path_updated": "ansible-directory-structure-examples/basic-roles-multi-environment/", 
+    "site_CRUD_default_OU": "ansible-directory-structure-examples", 
+    "site_CRUD_default_environment_or_legacy": "", 
+    "site_CRUD_site_name": "basic-roles-multi-environment", 
+    "tags": [
+      {
+        "name": "ansible-directory-structure-examples"
+      }, 
+      {
+        "name": "basic-roles-multi-environment"
+      }
+    ]
   }
 }
