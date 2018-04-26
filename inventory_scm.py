@@ -50,6 +50,7 @@ scm_defaults = dict(
                  password = 'pass',
                  clean_group_keys = True,
                  nest_tags = False,
+                 only_host_vars = True,
         ),
     cache = dict ( max_age = 600,
 
@@ -94,9 +95,8 @@ class ScmInventory(object):
         else:
             self.inventory['_meta'] = {'hostvars': {}}
             for hostname in self.hosts:
-                self.inventory['_meta']['hostvars'][hostname] = {
-                    'scm': self.hosts[hostname],
-                }
+                self.inventory['_meta']['hostvars'][hostname] = self.hosts[hostname]
+                    
                 # include the ansible_ssh_host in the top level
                 if 'ansible_ssh_host' in self.hosts[hostname]:
                     self.inventory['_meta']['hostvars'][hostname]['ansible_ssh_host'] = self.hosts[hostname]['ansible_ssh_host']
@@ -222,6 +222,12 @@ class ScmInventory(object):
         else:
             self.scm_nest_tags =  scm_defaults['scm']['nest_tags'] #False
 
+        if config.has_option('scm', 'only_host_vars'):
+            self.scm_only_host_vars = config.getboolean('scm', 'only_host_vars')
+        else:
+            self.scm_only_host_vars =  scm_defaults['scm']['only_host_vars'] #False
+
+
         if config.has_option('scm', 'suffix'):
             self.scm_suffix = config.get('scm', 'suffix')
             if self.scm_suffix[0] != '.':
@@ -261,6 +267,7 @@ class ScmInventory(object):
             print("scm_work_dir          = %s" % self.scm_work_dir)
             print("scm_clean_group_keys  = %s" % self.scm_clean_group_keys)
             print("scm_nest_tags         = %s" % self.scm_nest_tags)
+            print("scm_only_host_vars    = %s" % self.scm_only_host_vars)
             # print("scm_username          = %s" % self.scm_username)
             # print("scm_pw                = %s" % self.scm_pw)
             # print("scm_ssl_verify        = %s" % self.scm_ssl_verify)
@@ -369,7 +376,7 @@ class ScmInventory(object):
         # regex compile
         regex_host = re.compile("^(all$|\\.).*", re.IGNORECASE)
         regex_dir = re.compile("^(\\.$|\\.).*", re.IGNORECASE)
-        regex_path = re.compile("(host_vars|inventory|inventories|hosts|host|vars|var|tags|tag|group|groups|group_vars|%s)." % self.scm_work_dir, re.IGNORECASE)
+        regex_path = re.compile("(host_vars|inventory|inventories|hosts|host|vars|var|tags|tag|group|groups|group_vars|%s)" % self.scm_work_dir, re.IGNORECASE)
 
 
         for root, dirs, files in os.walk( _workdir ):
@@ -395,19 +402,23 @@ class ScmInventory(object):
                         # _path = root.replace(self.scm_work_dir,'').replace('host_vars', '')
                         _vars = self.load_hosts_vars(os.path.join(root, file))
                         _path = regex_path.sub("", root)
-                        _hosts.append( dict(name=_hostname, tags=self.to_tag(_path), vars=_vars, hosts=[]) )
+
+                        if self.scm_only_host_vars:
+                            # only content from host_vars
+                            _copy = _vars.copy()
+                            _copy.update( dict(name=_hostname,) )
+                            _hosts.append( dict( _copy ))
+                        else:
+                            # - no overwrite 
+                            _hosts.append( dict(name=_hostname, tags=self.to_tag(_path), vars=_vars, hosts=[]) )
 
                         # hard coded limitation
-                        if self.scm_license_max_hosts > 0:
-                            if len(_hosts) >= 20:
-                                # print (len(_hosts))
-                                break
+                        if self.scm_license_max_hosts > 0 and len(_hosts) >= self.scm_license_max_hosts:
+                            break
 
             # hard coded limitation
-            if self.scm_license_max_hosts > 0:
-                if len(_hosts) >= 20:
-                    # print (len(_hosts))
-                    break
+            if self.scm_license_max_hosts > 0 and len(_hosts) >= self.scm_license_max_hosts:
+                break
 
 
 

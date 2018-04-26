@@ -1,113 +1,47 @@
 {
   "dev-server": {
-    "hosts": [], 
-    "name": "dev-server", 
-    "tags": [
-      {
-        "name": "ansible-directory-structure-examples"
-      }, 
-      {
-        "name": "basic-roles-multi-environment"
-      }
-    ], 
-    "vars": {
-      "ansible_ssh_host": "10.0.0.101", 
-      "ansible_ssh_private_key_file": "./.vagrant/machines/default/virtualbox/private_key", 
-      "ansible_ssh_user": "vagrant"
-    }
+    "ansible_ssh_host": "10.0.0.101", 
+    "ansible_ssh_private_key_file": "./.vagrant/machines/default/virtualbox/private_key", 
+    "ansible_ssh_user": "vagrant", 
+    "name": "dev-server"
   }, 
   "example-web_web-servers_dev-server": {
-    "hosts": [], 
-    "name": "example-web_web-servers_dev-server", 
-    "tags": [
-      {
-        "name": "ansible-directory-structure-examples"
-      }, 
-      {
-        "name": "advanced-shared-global-roles"
-      }
-    ], 
-    "vars": {
-      "ansible_ssh_host": "{{ exampleWeb_webServers_ssh_host }}", 
-      "ansible_ssh_private_key_file": "{{ exampleWeb_webServers_ssh_private_key_file }}", 
-      "ansible_ssh_user": "{{ exampleWeb_webServers_ssh_user }}", 
-      "exampleWeb_webServers_ssh_host": "10.0.0.102", 
-      "exampleWeb_webServers_ssh_private_key_file": "./.vagrant/machines/default/virtualbox/private_key", 
-      "exampleWeb_webServers_ssh_user": "vagrant"
-    }
+    "ansible_ssh_host": "{{ exampleWeb_webServers_ssh_host }}", 
+    "ansible_ssh_private_key_file": "{{ exampleWeb_webServers_ssh_private_key_file }}", 
+    "ansible_ssh_user": "{{ exampleWeb_webServers_ssh_user }}", 
+    "exampleWeb_webServers_ssh_host": "10.0.0.102", 
+    "exampleWeb_webServers_ssh_private_key_file": "./.vagrant/machines/default/virtualbox/private_key", 
+    "exampleWeb_webServers_ssh_user": "vagrant", 
+    "name": "example-web_web-servers_dev-server"
   }, 
   "example-web_web-servers_prod-server": {
-    "hosts": [], 
-    "name": "example-web_web-servers_prod-server", 
-    "tags": [
-      {
-        "name": "ansible-directory-structure-examples"
-      }, 
-      {
-        "name": "advanced-shared-global-roles"
-      }
-    ], 
-    "vars": {
-      "ansible_ssh_host": "{{ exampleWeb_webServers_ssh_host }}", 
-      "ansible_ssh_private_key_file": "{{ exampleWeb_webServers_ssh_private_key_file }}", 
-      "ansible_ssh_user": "{{ exampleWeb_webServers_ssh_user }}", 
-      "exampleWeb_webServers_ssh_host": "10.0.0.102", 
-      "exampleWeb_webServers_ssh_private_key_file": "./.vagrant/machines/default/virtualbox/private_key", 
-      "exampleWeb_webServers_ssh_user": "vagrant"
-    }
+    "ansible_ssh_host": "{{ exampleWeb_webServers_ssh_host }}", 
+    "ansible_ssh_private_key_file": "{{ exampleWeb_webServers_ssh_private_key_file }}", 
+    "ansible_ssh_user": "{{ exampleWeb_webServers_ssh_user }}", 
+    "exampleWeb_webServers_ssh_host": "10.0.0.102", 
+    "exampleWeb_webServers_ssh_private_key_file": "./.vagrant/machines/default/virtualbox/private_key", 
+    "exampleWeb_webServers_ssh_user": "vagrant", 
+    "name": "example-web_web-servers_prod-server"
   }, 
   "example-web_web-servers_staging-server": {
-    "hosts": [], 
-    "name": "example-web_web-servers_staging-server", 
-    "tags": [
-      {
-        "name": "ansible-directory-structure-examples"
-      }, 
-      {
-        "name": "advanced-shared-global-roles"
-      }
-    ], 
-    "vars": {
-      "ansible_ssh_host": "{{ exampleWeb_webServers_ssh_host }}", 
-      "ansible_ssh_private_key_file": "{{ exampleWeb_webServers_ssh_private_key_file }}", 
-      "ansible_ssh_user": "{{ exampleWeb_webServers_ssh_user }}", 
-      "exampleWeb_webServers_ssh_host": "10.0.0.102", 
-      "exampleWeb_webServers_ssh_private_key_file": "./.vagrant/machines/default/virtualbox/private_key", 
-      "exampleWeb_webServers_ssh_user": "vagrant"
-    }
+    "ansible_ssh_host": "{{ exampleWeb_webServers_ssh_host }}", 
+    "ansible_ssh_private_key_file": "{{ exampleWeb_webServers_ssh_private_key_file }}", 
+    "ansible_ssh_user": "{{ exampleWeb_webServers_ssh_user }}", 
+    "exampleWeb_webServers_ssh_host": "10.0.0.102", 
+    "exampleWeb_webServers_ssh_private_key_file": "./.vagrant/machines/default/virtualbox/private_key", 
+    "exampleWeb_webServers_ssh_user": "vagrant", 
+    "name": "example-web_web-servers_staging-server"
   }, 
   "prod-server": {
-    "hosts": [], 
-    "name": "prod-server", 
-    "tags": [
-      {
-        "name": "ansible-directory-structure-examples"
-      }, 
-      {
-        "name": "basic-roles-multi-environment"
-      }
-    ], 
-    "vars": {
-      "ansible_ssh_host": "10.0.0.101", 
-      "ansible_ssh_private_key_file": "./.vagrant/machines/default/virtualbox/private_key", 
-      "ansible_ssh_user": "vagrant"
-    }
+    "ansible_ssh_host": "10.0.0.101", 
+    "ansible_ssh_private_key_file": "./.vagrant/machines/default/virtualbox/private_key", 
+    "ansible_ssh_user": "vagrant", 
+    "name": "prod-server"
   }, 
   "staging-server": {
-    "hosts": [], 
-    "name": "staging-server", 
-    "tags": [
-      {
-        "name": "ansible-directory-structure-examples"
-      }, 
-      {
-        "name": "basic-roles-multi-environment"
-      }
-    ], 
-    "vars": {
-      "ansible_ssh_host": "10.0.0.101", 
-      "ansible_ssh_private_key_file": "./.vagrant/machines/default/virtualbox/private_key", 
-      "ansible_ssh_user": "vagrant"
-    }
+    "ansible_ssh_host": "10.0.0.101", 
+    "ansible_ssh_private_key_file": "./.vagrant/machines/default/virtualbox/private_key", 
+    "ansible_ssh_user": "vagrant", 
+    "name": "staging-server"
   }
 }
