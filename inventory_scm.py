@@ -378,6 +378,10 @@ class ScmInventory(object):
         regex_dir = re.compile("^(\\.$|\\.).*", re.IGNORECASE)
         regex_path = re.compile("(host_vars|inventory|inventories|hosts|host|vars|var|tags|tag|group|groups|group_vars|%s)" % self.scm_work_dir, re.IGNORECASE)
 
+        _parent_dir = _workdir.split('/')[-1]
+        if len(_parent_dir) > 2:
+            _parent_dir = _parent_dir[-2]
+
 
         for root, dirs, files in os.walk( _workdir ):
 
@@ -402,6 +406,9 @@ class ScmInventory(object):
                         # _path = root.replace(self.scm_work_dir,'').replace('host_vars', '')
                         _vars = self.load_hosts_vars(os.path.join(root, file))
                         _path = regex_path.sub("", root)
+
+                        _path = os.path.join(_parent_dir, _path)
+
 
                         if self.scm_only_host_vars:
                             # only content from host_vars
@@ -676,7 +683,7 @@ class ScmInventory(object):
         Converts 'path' string into in a dict so they can be used as Ansible groups
         """
         _tags = []
-        regex_dir = re.compile("^(\.$|\.)*", re.IGNORECASE)
+        regex_dir = re.compile("^(\.$|\.)*|(\.\/)", re.IGNORECASE)
         path = regex_dir.sub("", path)
         tagnames = path.split('/')
         for tag in tagnames:
