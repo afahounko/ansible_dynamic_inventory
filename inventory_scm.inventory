@@ -25,6 +25,23 @@
     "prod-server", 
     "staging-server"
   ], 
+  "dev": [
+    "dev", 
+    "dev"
+  ], 
+  "groups": {
+    "children": [
+      "prod", 
+      "staging", 
+      "dev"
+    ], 
+    "hosts": [], 
+    "vars": {}
+  }, 
+  "prod": [
+    "prod", 
+    "prod"
+  ], 
   "ry": [
     "dev-server", 
     "prod-server", 
@@ -32,6 +49,10 @@
     "example-web_web-servers_staging-server", 
     "example-web_web-servers_prod-server", 
     "example-web_web-servers_dev-server"
+  ], 
+  "staging": [
+    "staging", 
+    "staging"
   ], 
   "tags": {
     "children": [

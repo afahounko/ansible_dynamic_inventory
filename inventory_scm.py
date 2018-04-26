@@ -33,6 +33,8 @@ from requests.auth import HTTPBasicAuth
 import warnings
 from ansible.errors import AnsibleError
 
+from ansible.plugins.inventory import expand_hostname_range, detect_range
+
 import subprocess
 import shutil
 
@@ -346,20 +348,8 @@ class ScmInventory(object):
 
 
 
-        results = [ 
-            { 'name': 'hostA', 'path': 'EU/SITE1/ENV/PROD/inventory/hostsA', 'tags': [ { 'name': 'EU'} , { 'name': 'SITE1'} , { 'name': 'PROD'} ] } ,
-            { 'name': 'hostB', 'path': 'EU/SITE1/ENV/DEV/inventory/hostsB', 'tags': [ { 'name': 'EU'} , { 'name': 'SITE1'} , { 'name': 'DEV'} ] } ,
-            { 'name': 'hostC', 'path': 'EU/SITE1/LEGACY/DEV/inventory/hostsC', 'tags': [ { 'name': 'EU'} , { 'name': 'SITE1'} , { 'name': 'DEV'}, { 'name': 'LEGACY'} ] } ,
-            ]
-
-        # results = [ 
-        #     { 'name': 'hostA', 'path': 'EU/SITE1/ENV/PRD/inventory/hostsA', 'tags': [ { 'name': 'EU/SITE1/ENV/PRD'} ] } ,
-        #     { 'name': 'hostB', 'path': 'EU/SITE1/ENV/DEV/inventory/hostsB', 'tags': [ { 'name': 'EU/SITE1/ENV/DEV'} ] } ,
-        #     { 'name': 'hostC', 'path': 'EU/SITE1/ENV/DEV/inventory/hostsC', 'tags': [ { 'name': 'EU/SITE1/LEGACY/DEV'} ] } , 
-        #     ]
-
         _hosts = []
-        _groups = dict()
+        _groups = []
 
         ext = [ ".yml", ".json" ]
 
@@ -403,6 +393,32 @@ class ScmInventory(object):
             
             for file in files:
 
+                # group
+                # if 'ds-group' in os.path.join(root, file):
+                #     _test=os.path.join(root, file)
+                #     print(_test)
+                #     test = self._ini_inventaire( _test )
+                #     print(test)
+                #     sys.exit()
+
+
+                if 'group_vars' in os.path.join(root, file):
+                    # print(os.path.join(root, file))
+                    _groupname = os.path.splitext(file)[0]
+                    if not regex_host.search(_groupname):
+
+                        _vars = self.load_vars(os.path.join(root, file))
+
+                        _copy = _vars.copy()
+                        _copy.update( dict(name=_groupname, hosts=[] ) )
+
+                        _groups.append( _copy )
+
+
+                        # print(os.path.join(root, file), _groups)               
+                        # sys.exit()
+
+
                 # - host 
 
                 if 'host_vars' in os.path.join(root, file):
@@ -411,7 +427,7 @@ class ScmInventory(object):
                     if not regex_host.search(_hostname):
                         # print (_hostname)
                         # _path = root.replace(self.scm_work_dir,'').replace('host_vars', '')
-                        _vars = self.load_hosts_vars(os.path.join(root, file))
+                        _vars = self.load_vars(os.path.join(root, file))
                         _path = regex_path.sub("", root)
 
                         _path = os.path.join(_parent_dir, _path)
@@ -422,7 +438,7 @@ class ScmInventory(object):
                             _copy = _vars.copy()
                             _copy.update( dict(name=_hostname, tags=self.to_tag(_path)) )
                             _copy.update( self._3ds_specific_vars(_path) )
-                            _hosts.append( dict( _copy ))
+                            _hosts.append( _copy )
                         else:
                             # - no overwrite 
                             _hosts.append( dict(name=_hostname, tags=self.to_tag(_path), vars=_vars, hosts=[]) )
@@ -430,6 +446,8 @@ class ScmInventory(object):
                         # hard coded limitation
                         if self.scm_license_max_hosts > 0 and len(_hosts) >= self.scm_license_max_hosts:
                             break
+
+
 
             # hard coded limitation
             if self.scm_license_max_hosts > 0 and len(_hosts) >= self.scm_license_max_hosts:
@@ -441,13 +459,13 @@ class ScmInventory(object):
                 
             
 
-                # - group
+                # # - group
 
-                if 'group' in os.path.join(root, file):
-                    # print(os.path.join(root, file))
-                    if file not in _groups:
-                        _groupname = os.path.splitext(file)[0]
-                        _groups[_groupname] = dict(path=root, vars={}, hosts=[])
+                # if 'group_vars' in os.path.join(root, file):
+                #     # print(os.path.join(root, file))
+                #     if file not in _groups:
+                #         _groupname = os.path.splitext(file)[0]
+                #         _groups[_groupname] = dict(path=root, vars={}, hosts=[])
             
                 # if file.endswith(tuple(ext)):
                 #     print(len(path) * '---', file)
@@ -479,7 +497,7 @@ class ScmInventory(object):
         #         last_page = True
         #     page += 1
 
-        return _hosts
+        return (_groups,_hosts)
 
     def update_cache(self):
         """
@@ -503,7 +521,42 @@ class ScmInventory(object):
 
         # - end of debug output
 
-        for host in self._get_hosts():
+        # -
+        ( _groups, _hosts ) = self._get_hosts()
+
+
+        # print(json.dumps(_groups, sort_keys=True, indent=2))
+        # sys.exit()
+
+
+
+        for group in _groups:
+
+            if 'groups' not in self.inventory:
+                self.inventory['groups'] = dict(children=[], vars={}, hosts=[])
+
+            # Add sub-group, as a child of top-level
+            safe_key = self.to_safe(group['name'])
+            if safe_key:
+                if self.args.debug:
+                    print("Adding sub-group '%s' to parent 'groups'" % safe_key)
+
+                if safe_key not in self.inventory['groups']['children']:
+                    self.push(self.inventory['groups'], 'children', safe_key)
+
+                self.push(self.inventory, safe_key, group['name'])
+
+                if self.args.debug:
+                    print("Found group [%s] for host which will be mapped to [%s]" % (group['name'], safe_key))
+
+
+
+
+
+
+
+
+        for host in _hosts:
 
             if self.scm_suffix is not None and not host['name'].endswith(self.scm_suffix):
                 host['name'] = host['name'] + self.scm_suffix
@@ -684,6 +737,22 @@ class ScmInventory(object):
             return re.sub(regex, "_", word.replace(" ", ""))
         else:
             return word
+    
+    def _ini_inventaire(self, filename):
+
+        hosts = []
+
+        f = open(filename)
+
+        for line in f:
+            
+            if detect_range(line):
+                hosts += expand_hostname_range(line)
+            else:
+                hosts += [line]
+
+        return hosts
+
 
     def to_tag(self, path):
         """
@@ -727,11 +796,11 @@ class ScmInventory(object):
         return _3ds
 
 
-    def load_hosts_vars(self, path_host_vars):
+    def load_vars(self, path_vars):
         """
-        Reads the path_host_vars file
+        Reads the path host/group vars file
         """
-        cache = open(path_host_vars, 'r')
+        cache = open(path_vars, 'r')
         yaml_cache = yaml.load(cache)
 
         return yaml_cache
