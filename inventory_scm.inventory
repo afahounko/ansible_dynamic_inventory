@@ -25,8 +25,17 @@
     "prod-server", 
     "staging-server"
   ], 
+  "ry": [
+    "dev-server", 
+    "prod-server", 
+    "staging-server", 
+    "example-web_web-servers_staging-server", 
+    "example-web_web-servers_prod-server", 
+    "example-web_web-servers_dev-server"
+  ], 
   "tags": {
     "children": [
+      "ry", 
       "ansible_directory_structure_examples", 
       "basic_roles_multi_environment", 
       "advanced_shared_global_roles"

@@ -43,9 +43,9 @@ except ImportError:
 
 # Defaults values in case conf file does not exist
 scm_defaults = dict(
-    scm = dict ( url = '.',
+    scm = dict ( url = '/Users/danny/ownCloud/ansible_dynamic_inventory/',
                  name = 'file',
-                 work_dir = '/tmp/work',
+                 work_dir = '/Users/danny/ownCloud/ansible_dynamic_inventory/',
                  username = 'admin',
                  password = 'pass',
                  clean_group_keys = True,
@@ -378,9 +378,16 @@ class ScmInventory(object):
         regex_dir = re.compile("^(\\.$|\\.).*", re.IGNORECASE)
         regex_path = re.compile("(host_vars|inventory|inventories|hosts|host|vars|var|tags|tag|group|groups|group_vars|%s)" % self.scm_work_dir, re.IGNORECASE)
 
-        _parent_dir = _workdir.split('/')[-1]
+        
+        _idx = -1
+        if _workdir.endswith('/'):
+            _idx = -2
+        _parent_dir = _workdir.split('/')[_idx]
+
+        # print (len(_parent_dir))
+        
         if len(_parent_dir) > 2:
-            _parent_dir = _parent_dir[-2]
+            _parent_dir = _parent_dir[-2:]
 
 
         for root, dirs, files in os.walk( _workdir ):
