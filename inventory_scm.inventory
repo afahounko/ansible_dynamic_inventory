@@ -25,17 +25,11 @@
     "prod-server", 
     "staging-server"
   ], 
-  "inventories": [
-    "example-web_web-servers_staging-server", 
-    "example-web_web-servers_prod-server", 
-    "example-web_web-servers_dev-server"
-  ], 
   "tags": {
     "children": [
       "ansible_directory_structure_examples", 
       "basic_roles_multi_environment", 
-      "advanced_shared_global_roles", 
-      "inventories"
+      "advanced_shared_global_roles"
     ], 
     "hosts": [], 
     "vars": {}

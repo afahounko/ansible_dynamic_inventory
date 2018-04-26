@@ -26,6 +26,7 @@ import ConfigParser
 import os
 import sys
 import re
+import yaml
 from time import time
 import requests
 from requests.auth import HTTPBasicAuth
@@ -52,7 +53,8 @@ scm_defaults = dict(
         ),
     cache = dict ( max_age = 600,
 
-        )
+        ),
+    license = dict( max_hosts = 1000),
     )
 
 # end default settings
@@ -173,6 +175,15 @@ class ScmInventory(object):
         if self.args.debug:
             print("No name specified, using %s" % scm_defaults['scm']['name'])
 
+        # license
+        if config.has_option('license', 'max_hosts'):
+            self.scm_license_max_hosts = config.getint('license', 'max_hosts')
+        else:
+            self.scm_license_max_hosts = scm_defaults['license']['max_hosts']
+
+        if self.args.debug:
+            print("License max hosts is %s" % scm_defaults['license']['max_hosts'])
+
 
 
         # if config.has_option('scm', 'username'):
@@ -258,6 +269,8 @@ class ScmInventory(object):
             print("cache_max_age        = %s" % self.cache_max_age)
             print("cache_path_hosts     = %s" % self.cache_path_hosts)
             print("cache_path_inventory = %s" % self.cache_path_inventory)
+            print("License settings:")
+            print("max_hosts            = %s" % self.scm_license_max_hosts)
 
     def parse_cli_args(self):
         """
@@ -343,10 +356,20 @@ class ScmInventory(object):
 
         ext = [ ".yml", ".json" ]
 
+
+        # -- to be improved
+
         if self.scm_url in ['.'] and self.scm_name in ['file']:
             _workdir = '.'
         else:
             _workdir = self.scm_work_dir
+
+        # end to be improved
+
+        # regex compile
+        regex_host = re.compile("^(all$|\\.).*", re.IGNORECASE)
+        regex_dir = re.compile("^(\\.$|\\.).*", re.IGNORECASE)
+        regex_path = re.compile("(host_vars|inventory|inventories|hosts|host|vars|var|tags|tag|group|groups|group_vars|%s)." % self.scm_work_dir, re.IGNORECASE)
 
 
         for root, dirs, files in os.walk( _workdir ):
@@ -354,6 +377,7 @@ class ScmInventory(object):
             if '.git' in dirs:
                 # don't go into any .git directories.
                 dirs.remove('.git')
+
 
             path = root.split(os.sep)
 
@@ -366,22 +390,24 @@ class ScmInventory(object):
                 if 'host_vars' in os.path.join(root, file):
                     # print(os.path.join(root, file))
                     _hostname = os.path.splitext(file)[0]
-                    matchObj = re.search("^(all$|\\.).*", _hostname)
-                    if not matchObj:
+                    if not regex_host.search(_hostname):
                         # print (_hostname)
-                        _path = root.replace(self.scm_work_dir,'').replace('host_vars', '')
-                        _hosts.append( dict(name=_hostname, tags=self.to_tag(_path), vars={}, hosts=[]) )
+                        # _path = root.replace(self.scm_work_dir,'').replace('host_vars', '')
+                        _vars = self.load_hosts_vars(os.path.join(root, file))
+                        _path = regex_path.sub("", root)
+                        _hosts.append( dict(name=_hostname, tags=self.to_tag(_path), vars=_vars, hosts=[]) )
 
                         # hard coded limitation
-                        if len(_hosts) >= 20:
-                            # print (len(_hosts))
-                            break
-
+                        if self.scm_license_max_hosts > 0:
+                            if len(_hosts) >= 20:
+                                # print (len(_hosts))
+                                break
 
             # hard coded limitation
-            if len(_hosts) >= 20:
-                # print (len(_hosts))
-                break
+            if self.scm_license_max_hosts > 0:
+                if len(_hosts) >= 20:
+                    # print (len(_hosts))
+                    break
 
 
 
@@ -640,12 +666,24 @@ class ScmInventory(object):
         Converts 'path' string into in a dict so they can be used as Ansible groups
         """
         _tags = []
-        tagnames = path[1:].split('/')
+        regex_dir = re.compile("^(\.$|\.)*", re.IGNORECASE)
+        path = regex_dir.sub("", path)
+        tagnames = path.split('/')
         for tag in tagnames:
             if len(tag) > 0 :
                 _tags.append( dict(name=tag, ) )
 
         return _tags
+
+
+    def load_hosts_vars(self, path_host_vars):
+        """
+        Reads the path_host_vars file
+        """
+        cache = open(path_host_vars, 'r')
+        yaml_cache = yaml.load(cache)
+
+        return yaml_cache
 
 
     def json_format_dict(self, data, pretty=False):
